@@ -1,3 +1,5 @@
+import { UnauthorizedError } from './errors';
+
 export interface PolicyResult {
   allowed: boolean;
   error: Error | null;
@@ -54,6 +56,10 @@ export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
   ) {
     super();
 
+    if (typeof fn !== 'function') {
+      throw new Error('PolicyCan demands a function as argument');
+    }
+
     if (typeof formatError === 'function') {
       this.formatError = formatError;
     }
@@ -68,8 +74,7 @@ export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
   }
 
   private preformatError(message?: string): Error {
-    // TODO: return proper error in `preformatError`
-    return new Error(message ?? 'Unauthorized');
+    return new UnauthorizedError(message ?? 'Unauthorized');
   }
 
   private normalize(result: PolicyFnReturn): null | Error {
@@ -115,13 +120,17 @@ export class PolicyAll<T extends PolicyFn> extends AbstractPolicy<T> {
   constructor(factors: AbstractPolicy<T>[]) {
     super();
 
+    if (factors.length < 1) {
+      throw Error('PolicyAll demands at least one factor');
+    }
+
     this.factors = factors;
   }
 
   public async inspect<S extends Parameters<T>>(
     ...args: S
   ): Promise<PolicyResult> {
-    let result: PolicyResult = {} as never;
+    let result: PolicyResult = null as never;
 
     for (const factor of this.factors) {
       result = await factor.inspect(...args);
@@ -141,13 +150,17 @@ export class PolicyAny<T extends PolicyFn> extends AbstractPolicy<T> {
   constructor(factors: AbstractPolicy<T>[]) {
     super();
 
+    if (factors.length < 1) {
+      throw Error('PolicyAny demands at least one factor');
+    }
+
     this.factors = factors;
   }
 
   public async inspect<S extends Parameters<T>>(
     ...args: S
   ): Promise<PolicyResult> {
-    let result: PolicyResult = {} as never;
+    let result: PolicyResult = null as never;
 
     for (const factor of this.factors) {
       result = await factor.inspect(...args);
