@@ -16,7 +16,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit",
+    "test": "jest",
     "lint": "eslint ./src/**/*.{ts,tsx}",
     "lint-hard": "tsc --noEmit && yarn run lint",
     "clear": "rm -rf dist",
