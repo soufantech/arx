@@ -1,2 +1,2 @@
 export * from './access-control';
-export { PolicyResult } from './policy';
+export { PolicyResult, PolicyFn } from './policy';
