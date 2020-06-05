@@ -7,7 +7,7 @@ describe('PolicyCan', () => {
   });
 
   describe('when policy function returns true', () => {
-    it('inspect returns true for allowed and null for error', async () => {
+    it('inspect returns allowed true and null error.', async () => {
       expect(await isSelf.inspect(5, 5)).toEqual(
         expect.objectContaining({
           allowed: true,
@@ -16,17 +16,17 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('authorize returns true', async () => {
+    it('authorize returns true.', async () => {
       expect(await isSelf.authorize(5, 5)).toBe(true);
     });
 
-    it('check returns true', async () => {
+    it('check returns true.', async () => {
       expect(await isSelf.check(5, 5)).toBe(true);
     });
   });
 
   describe('when policy function returns false', () => {
-    it('inspect returns false for allowed and default error.', async () => {
+    it('inspect returns allowed false and default error.', async () => {
       const result = await isSelf.inspect(5, 3);
 
       expect(result).toEqual(
@@ -43,7 +43,7 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('authorize throws default exception', async () => {
+    it('authorize throws default exception.', async () => {
       expect.assertions(2);
 
       try {
@@ -54,7 +54,7 @@ describe('PolicyCan', () => {
       }
     });
 
-    it('check returns false', async () => {
+    it('check returns false.', async () => {
       expect(await isSelf.check(5, 3)).toBe(false);
     });
   });
@@ -68,7 +68,7 @@ describe('PolicyCan', () => {
       return `${a} is not ${b}!`;
     });
 
-    it('inspect returns false for allowed and default error with string.', async () => {
+    it('inspect returns allowed false and default error with string as message.', async () => {
       const result = await isSelf.inspect(5, 3);
 
       expect(result).toEqual(
@@ -85,7 +85,7 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('authorize throws default exception with custom message', async () => {
+    it('authorize throws default exception with string as message.', async () => {
       expect.assertions(2);
 
       try {
@@ -96,7 +96,7 @@ describe('PolicyCan', () => {
       }
     });
 
-    it('check returns false', async () => {
+    it('check returns false.', async () => {
       expect(await isSelf.check(5, 3)).toBe(false);
     });
 
@@ -150,7 +150,7 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('authorize throws the custom error.', async () => {
+    it('authorize throws the custom exception.', async () => {
       expect.assertions(2);
 
       try {
@@ -238,7 +238,7 @@ describe('PolicyCan', () => {
       return new NotDivisibleByTenError(`${n} is not divisible by ten!`);
     });
 
-    it('inspect returns a transparent PolicyResult if allowed.', async () => {
+    it('inspect returns the same PolicyResult if allowed.', async () => {
       const result = await isEven.inspect(130);
 
       expect(result).toEqual(
@@ -249,19 +249,19 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('check returns true if the returned PolicyResult is allowed.', async () => {
+    it('check returns true if the PolicyResult is allowed.', async () => {
       const result = await isEven.check(130);
 
       expect(result).toBe(true);
     });
 
-    it('authorize returns true if the returned PolicyResult is allowed.', async () => {
+    it('authorize returns true if the PolicyResult is allowed.', async () => {
       const result = await isEven.authorize(130);
 
       expect(result).toBe(true);
     });
 
-    it('inspect returns the error of PolicyResult that was not allowed.', async () => {
+    it('inspect returns PolicyResult error if not allowed.', async () => {
       const result1 = await isDivisibleByTen.inspect(131);
       const result2 = await isDivisibleByTen.inspect(132);
 
@@ -280,7 +280,7 @@ describe('PolicyCan', () => {
       );
     });
 
-    it('authorize throws the error of the PolicyResult that was not allowed.', async () => {
+    it('authorize throws the PolicyResult error if not allowed.', async () => {
       expect.assertions(4);
 
       try {
@@ -298,7 +298,7 @@ describe('PolicyCan', () => {
       }
     });
 
-    it('check returns false indenpendtly of the PolicyResult that was not allowed.', async () => {
+    it('check returns false if some PolicyResult was not allowed.', async () => {
       const result1 = await isDivisibleByTen.check(131);
       const result2 = await isDivisibleByTen.check(132);
 
@@ -306,7 +306,7 @@ describe('PolicyCan', () => {
       expect(result2).toBe(false);
     });
 
-    it('formatError receives the error of the policy result that was not allowed.', async () => {
+    it('formatError receives the PolicyResult error from the policy that was not allowed.', async () => {
       const settings: PolicyCanSettings = {
         formatError: jest.fn((error) => {
           return error;
@@ -330,16 +330,16 @@ describe('PolicyCan', () => {
   });
 
   describe('error formatting', () => {
-    class PreformatedError extends Error {}
-    class FormatedError extends Error {}
+    class PreformattedError extends Error {}
+    class FormattedError extends Error {}
 
     it('formatError receives the output of preformatError.', async () => {
       const settings: PolicyCanSettings = {
         preformatError(message) {
-          return new PreformatedError(`preformated(${message})`);
+          return new PreformattedError(`preformatted(${message})`);
         },
         formatError(error) {
-          return new FormatedError(`formated(${error.message})`);
+          return new FormattedError(`formatted(${error.message})`);
         },
       };
 
@@ -349,18 +349,18 @@ describe('PolicyCan', () => {
 
       const result = await forbidden.inspect();
 
-      expect(result.error).toBeInstanceOf(FormatedError);
+      expect(result.error).toBeInstanceOf(FormattedError);
       expect(result.error).toEqual(
         expect.objectContaining({
-          message: 'formated(preformated(Forbidden!))',
+          message: 'formatted(preformatted(Forbidden!))',
         }),
       );
     });
 
-    it('formatError receives the default error if preformatedError has not been defined.', async () => {
+    it('formatError receives the default error if preformattedError has not been defined.', async () => {
       const settings: PolicyCanSettings = {
         formatError: jest.fn((error) => {
-          return new FormatedError(`formated(${error.toString()})`);
+          return new FormattedError(`formatted(${error.toString()})`);
         }),
       };
 
@@ -373,18 +373,18 @@ describe('PolicyCan', () => {
       expect(settings.formatError).toHaveBeenCalledWith(
         expect.any(UnauthorizedError),
       );
-      expect(result.error).toBeInstanceOf(FormatedError);
+      expect(result.error).toBeInstanceOf(FormattedError);
       expect(result.error).toEqual(
         expect.objectContaining({
-          message: 'formated(UnauthorizedError: Forbidden!)',
+          message: 'formatted(UnauthorizedError: Forbidden!)',
         }),
       );
     });
 
-    it('message is undefined in preformatError if string is not returned.', async () => {
+    it('message is undefined in preformatError if a string is not returned.', async () => {
       const settings: PolicyCanSettings = {
         preformatError: jest.fn(() => {
-          return new PreformatedError(`Forbidden for no apparent reason`);
+          return new PreformattedError(`Forbidden for no apparent reason`);
         }),
       };
 
@@ -419,7 +419,7 @@ describe('PolicyAll', () => {
   describe('when all policies allow', () => {
     const allPass = new PolicyAll([allow, allow, allow]);
 
-    it('inspect allows', async () => {
+    it('inspect returns allows true and null error.', async () => {
       expect(await allPass.inspect()).toEqual(
         expect.objectContaining({
           allowed: true,
@@ -441,7 +441,7 @@ describe('PolicyAll', () => {
     });
   });
 
-  describe('when one of the policies denies', () => {
+  describe('when at least one of the policies deny', () => {
     const someFail = new PolicyAll([allow, deny1, allow, deny2]);
 
     it('inspect returns the first denied PolicyResult.', async () => {
@@ -457,7 +457,7 @@ describe('PolicyAll', () => {
       );
     });
 
-    it('authorize throws the first denied error.', async () => {
+    it('authorize throws the error of the first denied policy.', async () => {
       expect.assertions(1);
 
       try {
@@ -474,7 +474,7 @@ describe('PolicyAll', () => {
     });
   });
 
-  it('throws an error when given an empty array', async () => {
+  it('throws an error when given an empty array.', async () => {
     expect(() => {
       new PolicyAll([]);
     }).toThrow(/at least one/);
@@ -482,10 +482,10 @@ describe('PolicyAll', () => {
 });
 
 describe('PolicyAny', () => {
-  describe('when some of the policies allow', () => {
+  describe('when at least one policy allow.', () => {
     const somePass = new PolicyAny([deny1, allow, deny2, allow]);
 
-    it('inspect allows', async () => {
+    it('inspect returns allowed true and null error.', async () => {
       expect(await somePass.inspect()).toEqual(
         expect.objectContaining({
           allowed: true,
@@ -507,10 +507,10 @@ describe('PolicyAny', () => {
     });
   });
 
-  describe('when all of the policies denies', () => {
+  describe('when all policies deny', () => {
     const allFail = new PolicyAny([deny1, deny2]);
 
-    it('inspect returns the last denied PolicyResult.', async () => {
+    it('inspect returns the error of the last denied policy.', async () => {
       const result = await allFail.inspect();
 
       expect(result).toEqual(
@@ -523,7 +523,7 @@ describe('PolicyAny', () => {
       );
     });
 
-    it('authorize throws the last denied error.', async () => {
+    it('authorize throws the error of the last denied policy.', async () => {
       expect.assertions(1);
 
       try {
@@ -540,7 +540,7 @@ describe('PolicyAny', () => {
     });
   });
 
-  it('throws an error when given an empty array', async () => {
+  it('throws an error when given an empty array.', async () => {
     expect(() => {
       new PolicyAny([]);
     }).toThrow(/at least one/);

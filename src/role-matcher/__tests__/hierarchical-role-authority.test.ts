@@ -25,7 +25,7 @@ describe('HierarchicalRoleAuthority', () => {
       );
     });
 
-    it('detects a circular reference when ranks are mutually backreferenced.', () => {
+    it('detects a circular reference when roles are mutually backreferenced.', () => {
       const MUTUAL_CIRC_REF_1 = {
         '1': ['2'],
         '2': ['1'],
@@ -65,7 +65,7 @@ describe('HierarchicalRoleAuthority', () => {
       );
     });
 
-    it('detects a circular reference when a role is backreferenced inderectly.', () => {
+    it('detects a circular reference when a role is backreferenced indirectly.', () => {
       const INDIRECT_CIRC_REF_1 = {
         '1': ['2'],
         '2': ['3'],
@@ -158,7 +158,7 @@ describe('HierarchicalRoleAuthority', () => {
       ).toMatchSnapshot();
     });
 
-    it('maps DAGs containing redundant ranks.', () => {
+    it('maps DAGs containing redundant roles.', () => {
       const REDUNDANT_TREE_DAG = {
         '1': ['2', '3', '4', '5', '6', '7'],
         '2': ['4', '5', '8'],
@@ -170,7 +170,7 @@ describe('HierarchicalRoleAuthority', () => {
       ).toMatchSnapshot();
     });
 
-    it('maps DAGs containing empty ranklines.', () => {
+    it('maps DAGs containing empty role arrays.', () => {
       const EMPTY_RANKLINE_DAG_1 = {
         '1': [],
       };

@@ -294,7 +294,7 @@ describe('RoleMatcher', () => {
           `);
     });
 
-    it('matches none when granted roles is an empty array', () => {
+    it('matches none when granted roles is an empty array.', () => {
       expect(matcher.match('k', [])).toMatchInlineSnapshot(`
               Object {
                 "all": false,
@@ -330,7 +330,7 @@ describe('RoleMatcher', () => {
           `);
     });
 
-    it('matches none when both required and granted are empty arrays', () => {
+    it('matches none when both required and granted are empty arrays.', () => {
       expect(matcher.match([], [])).toMatchInlineSnapshot(`
               Object {
                 "all": false,
@@ -343,7 +343,7 @@ describe('RoleMatcher', () => {
           `);
     });
 
-    it('matches none when granted is an undefined value', () => {
+    it('matches none when granted is an undefined value.', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect(matcher.match(['a', 'b'], undefined as any))
         .toMatchInlineSnapshot(`
@@ -361,7 +361,7 @@ describe('RoleMatcher', () => {
           `);
     });
 
-    it('matches none when granted is an empty string', () => {
+    it('matches none when granted is an empty string.', () => {
       expect(matcher.match(['a', 'b'], '')).toMatchInlineSnapshot(`
               Object {
                 "all": false,
@@ -377,7 +377,7 @@ describe('RoleMatcher', () => {
           `);
     });
 
-    it('matches none when both required and granted are empty arrays', () => {
+    it('matches none when both required and granted are empty arrays.', () => {
       expect(matcher.match('k', ['c', 'b'])).toMatchInlineSnapshot(`
         Object {
           "all": false,
