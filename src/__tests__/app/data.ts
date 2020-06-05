@@ -1,6 +1,18 @@
 import { User, Article, ArticleComment } from './models';
 
 /*
+               ROLE HIERARCHY
+  =========================================
+
+                   ADMIN
+                  /     \
+             WRITER     MODERATOR
+                  \     /
+                 COMMENTER
+                  
+                   
+                ROLE SUMMARY
+  =========================================
   larry                           COMMENTER        
   matz                    WRITER  COMMENTER
   guido                   WRITER  COMMENTER
@@ -79,28 +91,28 @@ export const users: Record<string, User> = {
 
 export const articles: Record<string, Article> = {
   ruby: {
-    id: 2,
+    id: 1,
     title: 'The Ruby Programming Language',
     author: users.matz,
     commentingEnabled: true,
   },
 
   python: {
-    id: 1,
+    id: 2,
     title: 'The Python Programming Language',
     author: users.guido,
     commentingEnabled: false,
   },
 
   cobol: {
-    id: 1,
+    id: 3,
     title: 'The COBOL Programming Language',
     author: users.hopper,
     commentingEnabled: true,
   },
 
   clang: {
-    id: 2,
+    id: 4,
     title: 'The C Programming Language',
     author: users.dennis,
     commentingEnabled: true,
@@ -115,17 +127,17 @@ export const comments: Record<string, ArticleComment> = {
 
   larryOnRuby: {
     author: users.larry,
-    article: articles.clang,
+    article: articles.ruby,
   },
 
-  dennisOnPython: {
+  dennisOnCobol: {
     author: users.dennis,
-    article: articles.python,
+    article: articles.cobol,
   },
 
-  pikeOnPython: {
+  pikeOnRuby: {
     author: users.pike,
-    article: articles.python,
+    article: articles.ruby,
   },
 
   hopperOnClang: {

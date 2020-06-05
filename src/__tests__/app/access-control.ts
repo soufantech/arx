@@ -1,16 +1,12 @@
-import { RoleMatcher, HierarchicalRoleAuthority } from '../role-matcher';
-import { AccessControl } from '../access-control';
+import { RoleMatcher, HierarchicalRoleAuthority } from '../../role-matcher';
+import { AccessControl } from '../../access-control';
 import { NotAuthorizedError } from './errors';
+import roleHierarchy from './role-hierarchy.json';
 
-export { PolicyFn } from '../access-control';
+export { PolicyFn } from '../../access-control';
 
 const roleMatcher = new RoleMatcher(
-  new HierarchicalRoleAuthority({
-    admin: ['moderator', 'writer'],
-    moderator: ['commenter'],
-    writer: ['commenter'],
-    commenter: [],
-  }),
+  new HierarchicalRoleAuthority(roleHierarchy),
 );
 
 export const matchRoles: RoleMatcher['match'] = roleMatcher.match.bind(

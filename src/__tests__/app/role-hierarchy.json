@@ -1,0 +1,6 @@
+{
+  "admin": ["moderator", "writer"],
+  "moderator": ["commenter"],
+  "writer": ["commenter"],
+  "commenter": []
+}
