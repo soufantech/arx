@@ -3,7 +3,7 @@ import { AccessControl } from '../../access-control';
 import { NotAuthorizedError } from './errors';
 import roleHierarchy from './role-hierarchy.json';
 
-export { PolicyFn } from '../../access-control';
+export { PolicyFn, Policy } from '../../access-control';
 
 const roleMatcher = new RoleMatcher(
   new HierarchicalRoleAuthority(roleHierarchy),

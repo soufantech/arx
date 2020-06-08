@@ -9,7 +9,9 @@ function formatRoleString(roles: string[]): string {
 
 export type UserPolicyFn = (user: User) => ReturnType<PolicyFn>;
 
-export function hasRoles(roles: string | string[]): Policy<UserPolicyFn> {
+export type UserPolicy = Policy<UserPolicyFn>;
+
+export function hasRoles(roles: string | string[]): UserPolicy {
   return can((user: User): string | true => {
     const match = matchRoles(roles, user.roles);
 
@@ -24,9 +26,9 @@ export function hasRoles(roles: string | string[]): Policy<UserPolicyFn> {
   });
 }
 
-export const isAdmin = hasRoles('admin');
+export const isAdmin: UserPolicy = hasRoles('admin');
 
-export const isModerator = hasRoles('moderator');
+export const isModerator: UserPolicy = hasRoles('moderator');
 
 export const isAuthenticated = can((user?: User) => {
   if (!user) {

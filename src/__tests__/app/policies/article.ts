@@ -1,4 +1,4 @@
-import { can, any, allow, PolicyFn } from '../access-control';
+import { can, any, allow, PolicyFn, Policy } from '../access-control';
 import { User, Article } from '../models';
 import { isAdmin, isModerator, hasRoles } from './user';
 
@@ -7,7 +7,9 @@ export type ArticlePolicyFn = (
   article: Article,
 ) => ReturnType<PolicyFn>;
 
-export const isAuthor = can((user: User, article: Article) => {
+export type ArticlePolicy = Policy<ArticlePolicyFn>;
+
+export const isAuthor: ArticlePolicy = can((user: User, article: Article) => {
   if (article.author.id === user.id) {
     return true;
   }
@@ -17,8 +19,12 @@ export const isAuthor = can((user: User, article: Article) => {
 
 export const createArticle = hasRoles('writer');
 
-export const editArticle = any(isAdmin, isAuthor);
+export const editArticle: ArticlePolicy = any(isAdmin, isAuthor);
 
-export const destroyArticle = any(isAdmin, isAuthor, isModerator);
+export const destroyArticle: ArticlePolicy = any(
+  isAdmin,
+  isAuthor,
+  isModerator,
+);
 
-export const readArticle = allow();
+export const readArticle: ArticlePolicy = allow<ArticlePolicyFn>();

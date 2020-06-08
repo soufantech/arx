@@ -1,6 +1,10 @@
-import { can, any, all, allow, PolicyFn } from '../access-control';
+import { can, any, all, allow, PolicyFn, Policy } from '../access-control';
 import { User, ArticleComment } from '../models';
-import { isAuthor as isArticleAuthor, ArticlePolicyFn } from './article';
+import {
+  isAuthor as isArticleAuthor,
+  ArticlePolicy,
+  ArticlePolicyFn,
+} from './article';
 import { hasRoles, isModerator, isAdmin } from './user';
 
 export type CommentPolicyFn = (
@@ -8,15 +12,19 @@ export type CommentPolicyFn = (
   comment: ArticleComment,
 ) => ReturnType<PolicyFn>;
 
-export const isAuthor = can((user: User, comment: ArticleComment) => {
-  if (user.id === comment.author.id) {
-    return true;
-  }
+export type CommentPolicy = Policy<CommentPolicyFn>;
 
-  return `${user.name} is not the author of comment (${comment.author.name} is).`;
-});
+export const isAuthor: CommentPolicy = can(
+  (user: User, comment: ArticleComment) => {
+    if (user.id === comment.author.id) {
+      return true;
+    }
 
-export const createComment = any(
+    return `${user.name} is not the author of comment (${comment.author.name} is).`;
+  },
+);
+
+export const createComment: ArticlePolicy = any(
   isAdmin,
   isArticleAuthor,
   all<ArticlePolicyFn>(
@@ -25,12 +33,12 @@ export const createComment = any(
   ),
 );
 
-export const editComment = any(isAdmin, isAuthor);
+export const editComment: CommentPolicy = any(isAdmin, isAuthor);
 
-export const destroyComment = any<CommentPolicyFn>(
+export const destroyComment: CommentPolicy = any(
   isAuthor,
   isModerator,
   (user, comment) => isArticleAuthor.inspect(user, comment.article),
 );
 
-export const readComment = allow();
+export const readComment: CommentPolicy = allow();

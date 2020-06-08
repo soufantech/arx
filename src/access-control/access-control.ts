@@ -10,8 +10,6 @@ import {
 
 export { PolicyFn, PolicyResult } from './policy';
 
-export type CanSettings = PolicyCanSettings;
-
 export type Policy<T extends PolicyFn> = AbstractPolicy<T>;
 
 export type Factor<T extends PolicyFn> = Policy<T> | PolicyFnReturn | T;
@@ -23,6 +21,8 @@ export type AccessControlSettings = {
 
 export class AccessControl {
   private readonly fnSettings: PolicyCanSettings;
+  private readonly allowedPolicy: Policy<PolicyFn>;
+  private readonly deniedPolicy: Policy<PolicyFn>;
 
   public constructor({
     preformatError,
@@ -32,6 +32,12 @@ export class AccessControl {
       preformatError: preformatError,
       formatError: formatError,
     };
+
+    // Cached policy object for AbstractControl.deny
+    this.deniedPolicy = this.can(() => false);
+
+    // Cached policy object for AbstractControl.allow
+    this.allowedPolicy = this.can(() => true);
   }
 
   private normalizeFactors<T extends PolicyFn>(
@@ -50,34 +56,42 @@ export class AccessControl {
     });
   }
 
-  public can<T extends PolicyFn>(
-    policyFn: T,
-    settings: CanSettings = {},
-  ): Policy<T> {
-    const fnSettings: PolicyCanSettings = { ...this.fnSettings, ...settings };
-
-    return new PolicyCan(policyFn, fnSettings);
+  /**
+   * Allows or denies according to the policy function return.
+   */
+  public can<T extends PolicyFn>(policyFn: T): Policy<T> {
+    return new PolicyCan(policyFn, this.fnSettings);
   }
 
+  /**
+   * Allows if at least one of the factors allow. Denies otherwise.
+   */
   public any<T extends PolicyFn>(...factors: Factor<T>[]): Policy<T> {
     const normalizedFactors = this.normalizeFactors(factors);
 
-    return new PolicyAny<T>(normalizedFactors);
+    return new PolicyAny(normalizedFactors);
   }
 
+  /**
+   * Denies if at least one of the factors deny. Allows otherwise.
+   */
   public all<T extends PolicyFn>(...factors: Factor<T>[]): Policy<T> {
     const normalizedFactors = this.normalizeFactors(factors);
 
     return new PolicyAll(normalizedFactors);
   }
 
-  public allow<T extends PolicyFn>(): Policy<T> {
-    return new PolicyCan(() => true);
+  /**
+   * Always allows.
+   */
+  public allow<T extends PolicyFn = PolicyFn>(): Policy<T> {
+    return this.allowedPolicy;
   }
 
-  public deny<T extends PolicyFn>(error?: string | Error): Policy<T> {
-    const result = error ?? false;
-
-    return new PolicyCan(() => result);
+  /**
+   * Always denies.
+   */
+  public deny<T extends PolicyFn = PolicyFn>(): Policy<T> {
+    return this.deniedPolicy;
   }
 }
