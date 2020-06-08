@@ -1,8 +1,7 @@
+import { can, any, all, allow, PolicyFn } from '../access-control';
 import { User, ArticleComment } from '../models';
-import { can, any, all, PolicyFn } from '../access-control';
-import { hasRoles } from './user';
 import { isAuthor as isArticleAuthor, ArticlePolicyFn } from './article';
-import { isModerator, isAdmin } from './user';
+import { hasRoles, isModerator, isAdmin } from './user';
 
 export type CommentPolicyFn = (
   user: User,
@@ -34,4 +33,4 @@ export const destroyComment = any<CommentPolicyFn>(
   (user, comment) => isArticleAuthor.inspect(user, comment.article),
 );
 
-export const readComment = can<CommentPolicyFn>(() => true);
+export const readComment = allow();

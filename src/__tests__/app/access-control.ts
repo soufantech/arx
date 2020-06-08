@@ -22,3 +22,9 @@ export const accessControl = new AccessControl({
 export const can: AccessControl['can'] = accessControl.can.bind(accessControl);
 export const all: AccessControl['all'] = accessControl.all.bind(accessControl);
 export const any: AccessControl['any'] = accessControl.any.bind(accessControl);
+export const allow: AccessControl['allow'] = accessControl.allow.bind(
+  accessControl,
+);
+export const deny: AccessControl['deny'] = accessControl.deny.bind(
+  accessControl,
+);

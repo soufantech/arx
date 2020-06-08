@@ -70,4 +70,14 @@ export class AccessControl {
 
     return new PolicyAll(normalizedFactors);
   }
+
+  public allow<T extends PolicyFn>(): Policy<T> {
+    return new PolicyCan(() => true);
+  }
+
+  public deny<T extends PolicyFn>(error?: string | Error): Policy<T> {
+    const result = error ?? false;
+
+    return new PolicyCan(() => result);
+  }
 }

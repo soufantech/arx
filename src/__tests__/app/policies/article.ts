@@ -1,5 +1,5 @@
+import { can, any, allow, PolicyFn } from '../access-control';
 import { User, Article } from '../models';
-import { can, any, PolicyFn } from '../access-control';
 import { isAdmin, isModerator, hasRoles } from './user';
 
 export type ArticlePolicyFn = (
@@ -21,4 +21,4 @@ export const editArticle = any(isAdmin, isAuthor);
 
 export const destroyArticle = any(isAdmin, isAuthor, isModerator);
 
-export const readArticle = can<ArticlePolicyFn>(() => true);
+export const readArticle = allow();
