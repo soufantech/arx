@@ -1,3 +1,3 @@
 import { ArxError } from '../errors';
 
-export class UnauthorizedError extends ArxError {}
+export class NotAllowedError extends ArxError {}

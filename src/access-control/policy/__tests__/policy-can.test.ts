@@ -1,4 +1,4 @@
-import { UnauthorizedError } from '../../errors';
+import { NotAllowedError } from '../../errors';
 import { PolicyCan, PolicyCanSettings } from '..';
 
 describe('PolicyCan', () => {
@@ -32,13 +32,13 @@ describe('PolicyCan', () => {
       expect(result).toEqual(
         expect.objectContaining({
           allowed: false,
-          error: expect.any(UnauthorizedError),
+          error: expect.any(NotAllowedError),
         }),
       );
 
       expect(result.error).toEqual(
         expect.objectContaining({
-          message: 'Unauthorized',
+          message: 'Not allowed',
         }),
       );
     });
@@ -49,8 +49,8 @@ describe('PolicyCan', () => {
       try {
         await isSelf.authorize(5, 3);
       } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect(err.message).toBe('Unauthorized');
+        expect(err).toBeInstanceOf(NotAllowedError);
+        expect(err.message).toBe('Not allowed');
       }
     });
 
@@ -74,7 +74,7 @@ describe('PolicyCan', () => {
       expect(result).toEqual(
         expect.objectContaining({
           allowed: false,
-          error: expect.any(UnauthorizedError),
+          error: expect.any(NotAllowedError),
         }),
       );
 
@@ -91,7 +91,7 @@ describe('PolicyCan', () => {
       try {
         await isSelf.authorize(5, 3);
       } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
+        expect(err).toBeInstanceOf(NotAllowedError);
         expect(err.message).toBe('5 is not 3!');
       }
     });
@@ -371,12 +371,12 @@ describe('PolicyCan', () => {
       const result = await forbidden.inspect();
 
       expect(settings.formatError).toHaveBeenCalledWith(
-        expect.any(UnauthorizedError),
+        expect.any(NotAllowedError),
       );
       expect(result.error).toBeInstanceOf(FormattedError);
       expect(result.error).toEqual(
         expect.objectContaining({
-          message: 'formatted(UnauthorizedError: Forbidden!)',
+          message: 'formatted(NotAllowedError: Forbidden!)',
         }),
       );
     });

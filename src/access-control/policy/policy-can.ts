@@ -4,7 +4,7 @@ import {
   AbstractPolicy,
   PolicyFnReturn,
 } from './abstract-policy';
-import { UnauthorizedError } from '../errors';
+import { NotAllowedError } from '../errors';
 
 export interface PolicyCanSettings {
   preformatError?: (message?: string) => Error;
@@ -45,7 +45,7 @@ export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
   }
 
   private preformatError(message?: string): Error {
-    return new UnauthorizedError(message ?? 'Unauthorized');
+    return new NotAllowedError(message ?? 'Not allowed');
   }
 
   private normalize(result: PolicyFnReturn): null | Error {
