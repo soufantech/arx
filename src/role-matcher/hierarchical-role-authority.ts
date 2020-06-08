@@ -1,8 +1,8 @@
 export type RoleHierarchyRepresentation = Record<string, string[]>;
 import { RoleAuthority } from './role-matcher';
+import { ArxError } from '../errors';
 
-// TODO: extract HierarchyMappingError;
-export class HierarchyMappingError extends Error {}
+export class HierarchyMappingError extends ArxError {}
 
 type HierarchyMapping = Record<string, string[]>;
 
