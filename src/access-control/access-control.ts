@@ -8,7 +8,13 @@ import {
   PolicyAll,
 } from './policy';
 
-type Factor<T extends PolicyFn> = AbstractPolicy<T> | PolicyFnReturn | T;
+export { PolicyFn, PolicyResult } from './policy';
+
+export type CanSettings = PolicyCanSettings;
+
+export type Policy<T extends PolicyFn> = AbstractPolicy<T>;
+
+export type Factor<T extends PolicyFn> = Policy<T> | PolicyFnReturn | T;
 
 export type AccessControlSettings = {
   preformatError?: (message?: string) => Error;
@@ -30,7 +36,7 @@ export class AccessControl {
 
   private normalizeFactors<T extends PolicyFn>(
     factors: Factor<T>[],
-  ): AbstractPolicy<T>[] {
+  ): Policy<T>[] {
     return factors.map((f) => {
       if (f instanceof AbstractPolicy) {
         return f;
@@ -45,21 +51,21 @@ export class AccessControl {
   }
 
   public can<T extends PolicyFn>(
-    fn: T,
-    settings: PolicyCanSettings = {},
-  ): AbstractPolicy<T> {
+    policyFn: T,
+    settings: CanSettings = {},
+  ): Policy<T> {
     const fnSettings: PolicyCanSettings = { ...this.fnSettings, ...settings };
 
-    return new PolicyCan(fn, fnSettings);
+    return new PolicyCan(policyFn, fnSettings);
   }
 
-  public any<T extends PolicyFn>(...factors: Factor<T>[]): AbstractPolicy<T> {
+  public any<T extends PolicyFn>(...factors: Factor<T>[]): Policy<T> {
     const normalizedFactors = this.normalizeFactors(factors);
 
     return new PolicyAny<T>(normalizedFactors);
   }
 
-  public all<T extends PolicyFn>(...factors: Factor<T>[]): AbstractPolicy<T> {
+  public all<T extends PolicyFn>(...factors: Factor<T>[]): Policy<T> {
     const normalizedFactors = this.normalizeFactors(factors);
 
     return new PolicyAll(normalizedFactors);
