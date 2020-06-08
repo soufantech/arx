@@ -1,6 +1,6 @@
 import { User, Article } from '../models';
 import { can, any, PolicyFn } from '../access-control';
-import { hasRole, isAdmin, isModerator } from './user';
+import { isAdmin, isModerator, hasRoles } from './user';
 
 export type ArticlePolicyFn = (
   user: User,
@@ -15,18 +15,10 @@ export const isAuthor = can((user: User, article: Article) => {
   return `${user.name} is not the author of article "${article.title}"`;
 });
 
-export const createArticle = can((user: User) => {
-  return hasRole.inspect(user, 'writer');
-});
+export const createArticle = hasRoles('writer');
 
-export const editArticle = can(async (user: User, article: Article) => {
-  return any(isAdmin, isAuthor).inspect(user, article);
-});
+export const editArticle = any(isAdmin, isAuthor);
 
-export const destroyArticle = can(async (user: User, article: Article) => {
-  return any(isAdmin, isAuthor, isModerator).inspect(user, article);
-});
+export const destroyArticle = any(isAdmin, isAuthor, isModerator);
 
-export const readArticle = can<ArticlePolicyFn>(() => {
-  return true;
-});
+export const readArticle = can<ArticlePolicyFn>(() => true);

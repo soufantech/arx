@@ -1,35 +1,32 @@
-import { can, matchRoles } from '../access-control';
+import { can, matchRoles, PolicyFn } from '../access-control';
 import { User } from '../models';
 import { NotAuthenticatedError } from '../errors';
+import { Policy } from '../../../access-control';
 
 function formatRoleString(roles: string[]): string {
   return roles.map((r) => `"${r}"`).join(', ');
 }
 
-export const hasRole = can((user: User, roles: string | string[]) => {
-  const match = matchRoles(roles, user.roles);
+export type UserPolicyFn = (user: User) => ReturnType<PolicyFn>;
 
-  if (match.any) {
-    return true;
-  }
+export function hasRoles(roles: string | string[]): Policy<UserPolicyFn> {
+  return can((user: User): string | true => {
+    const match = matchRoles(roles, user.roles);
 
-  const required = formatRoleString(match.required);
-  const reachable = formatRoleString(match.reachable);
+    if (match.any) {
+      return true;
+    }
 
-  return `${user.name} must have one of the following roles: ${required} - but has ${reachable}}`;
-});
+    const required = formatRoleString(match.required);
+    const reachable = formatRoleString(match.reachable);
 
-export const isAdmin = can((user: User) => {
-  if (matchRoles('admin', user.roles).any) {
-    return true;
-  }
+    return `${user.name} must have one of the following roles: ${required} - but has ${reachable}}`;
+  });
+}
 
-  return `User must have admin privilege`;
-});
+export const isAdmin = hasRoles('admin');
 
-export const isModerator = can((user: User) => {
-  return hasRole.inspect(user, 'moderator');
-});
+export const isModerator = hasRoles('moderator');
 
 export const isAuthenticated = can((user?: User) => {
   if (!user) {
