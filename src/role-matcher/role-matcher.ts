@@ -1,5 +1,3 @@
-export type AccessControlError = Error;
-
 export interface RoleMatch {
   readonly all: boolean;
   readonly any: boolean;
