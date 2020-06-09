@@ -244,7 +244,7 @@ describe('HierarchicalRoleAuthority', () => {
       ).toMatchSnapshot();
     });
 
-    it('can remap the hierarchy', () => {
+    it('can remap the hierarchy.', () => {
       const HIERARCHY_ONE = {
         a: ['b', 'c'],
       };

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HierarchicalRoleAuthority mapping can remap the hierarchy 1`] = `
+exports[`HierarchicalRoleAuthority mapping can remap the hierarchy. 1`] = `
 Object {
   "a": Array [
     "a",
@@ -16,7 +16,7 @@ Object {
 }
 `;
 
-exports[`HierarchicalRoleAuthority mapping can remap the hierarchy 2`] = `
+exports[`HierarchicalRoleAuthority mapping can remap the hierarchy. 2`] = `
 Object {
   "k": Array [
     "k",

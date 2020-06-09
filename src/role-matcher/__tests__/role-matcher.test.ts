@@ -2,7 +2,7 @@ import { RoleMatcher } from '../role-matcher';
 import { HierarchicalRoleAuthority } from '../hierarchical-role-authority';
 
 describe('RoleMatcher', () => {
-  describe('with authority', () => {
+  describe('with an explicit authority', () => {
     const HIERARCHY = {
       a: ['b', 'c'],
       b: ['d'],
@@ -414,6 +414,38 @@ describe('RoleMatcher', () => {
           ],
           "required": Array [
             "k",
+          ],
+        }
+      `);
+    });
+  });
+
+  describe('without an explicity authority', () => {
+    const matcher = new RoleMatcher();
+
+    it('matches the roles directly.', () => {
+      expect(matcher.match(['a', 'b', 'c', 'd'], ['a', 'd']))
+        .toMatchInlineSnapshot(`
+        Object {
+          "all": false,
+          "any": true,
+          "granted": Array [
+            "a",
+            "d",
+          ],
+          "matches": Array [
+            "a",
+            "d",
+          ],
+          "reachable": Array [
+            "a",
+            "d",
+          ],
+          "required": Array [
+            "a",
+            "b",
+            "c",
+            "d",
           ],
         }
       `);

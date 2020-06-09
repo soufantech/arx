@@ -1,3 +1,5 @@
+import { HierarchicalRoleAuthority } from './hierarchical-role-authority';
+
 export interface RoleMatch {
   readonly all: boolean;
   readonly any: boolean;
@@ -20,8 +22,10 @@ export type RoleArg = string | string[];
 export class RoleMatcher {
   private readonly roleAuthority: RoleAuthority;
 
-  constructor(roleAuthority: RoleAuthority) {
-    this.roleAuthority = roleAuthority;
+  constructor(roleAuthority?: RoleAuthority) {
+    // A HierarchicalRoleAuthority with with an emptry representation is
+    // just a straight authority.
+    this.roleAuthority = roleAuthority ?? new HierarchicalRoleAuthority({});
   }
 
   public getReachableRoles(grantedRoles: RoleArg): string[] {
