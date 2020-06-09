@@ -12,6 +12,25 @@ describe('RoleMatcher', () => {
 
     const matcher = new RoleMatcher(new HierarchicalRoleAuthority(HIERARCHY));
 
+    it('can be queried about all the reachable roles given the granted roles', () => {
+      expect(matcher.getReachableRoles(['a', 'e'])).toMatchInlineSnapshot(`
+        Array [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+        ]
+      `);
+      expect(matcher.getReachableRoles('b')).toMatchInlineSnapshot(`
+        Array [
+          "b",
+          "d",
+          "e",
+        ]
+      `);
+    });
+
     it('matches all with single required role.', () => {
       expect(matcher.match('e', 'a')).toMatchInlineSnapshot(`
               Object {

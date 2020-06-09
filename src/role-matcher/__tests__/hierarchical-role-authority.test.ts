@@ -243,5 +243,23 @@ describe('HierarchicalRoleAuthority', () => {
         new HierarchicalRoleAuthority(MULTIPLE_TREE_DAG).getMapping(),
       ).toMatchSnapshot();
     });
+
+    it('can remap the hierarchy', () => {
+      const HIERARCHY_ONE = {
+        a: ['b', 'c'],
+      };
+
+      const HIERARCHY_TWO = {
+        k: ['y', 'z'],
+      };
+
+      const roleAuth = new HierarchicalRoleAuthority(HIERARCHY_ONE);
+
+      expect(roleAuth.getMapping()).toMatchSnapshot();
+
+      roleAuth.setHierarchy(HIERARCHY_TWO);
+
+      expect(roleAuth.getMapping()).toMatchSnapshot();
+    });
   });
 });

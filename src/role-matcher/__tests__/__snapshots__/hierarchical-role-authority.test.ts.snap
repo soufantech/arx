@@ -1,5 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HierarchicalRoleAuthority mapping can remap the hierarchy 1`] = `
+Object {
+  "a": Array [
+    "a",
+    "b",
+    "c",
+  ],
+  "b": Array [
+    "b",
+  ],
+  "c": Array [
+    "c",
+  ],
+}
+`;
+
+exports[`HierarchicalRoleAuthority mapping can remap the hierarchy 2`] = `
+Object {
+  "k": Array [
+    "k",
+    "y",
+    "z",
+  ],
+  "y": Array [
+    "y",
+  ],
+  "z": Array [
+    "z",
+  ],
+}
+`;
+
 exports[`HierarchicalRoleAuthority mapping maps DAGs containing empty role arrays. 1`] = `
 Object {
   "1": Array [
