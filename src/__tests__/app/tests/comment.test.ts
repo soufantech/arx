@@ -34,6 +34,8 @@ describe('comment', () => {
 
     describe('on non-commentable article', () => {
       it('is generally denied.', async () => {
+        expect.assertions(2);
+
         try {
           // python is non-commentable
           await commentController.create(users.larry, articles.python);
@@ -150,7 +152,7 @@ describe('comment', () => {
 
     it('is allowed to the article author.', async () => {
       // matz can destroy a comment larry wrote on his article.
-      await commentController.destroy(users.larry, comments.larryOnRuby);
+      await commentController.destroy(users.matz, comments.larryOnRuby);
     });
 
     it('is allowed to moderators.', async () => {
