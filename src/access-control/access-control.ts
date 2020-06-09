@@ -21,15 +21,11 @@ export type AccessControlSettings = {
 export class AccessControl {
   private readonly policyCanSettings: PolicyCanSettings;
   private readonly allowedPolicy: Policy<PolicyFn>;
-  private readonly deniedPolicy: Policy<PolicyFn>;
 
   public constructor({ preformatError }: AccessControlSettings = {}) {
     this.policyCanSettings = {
       preformatError: preformatError,
     };
-
-    // Cached policy object for AbstractControl.deny
-    this.deniedPolicy = this.can(() => false);
 
     // Cached policy object for AbstractControl.allow
     this.allowedPolicy = this.can(() => true);
@@ -86,7 +82,11 @@ export class AccessControl {
   /**
    * Always denies.
    */
-  public deny<T extends PolicyFn = PolicyFn>(): Policy<T> {
-    return this.deniedPolicy;
+  public deny<T extends PolicyFn = PolicyFn>(
+    error?: string | Error,
+  ): Policy<T> {
+    const result = error ?? false;
+
+    return this.can(() => result);
   }
 }

@@ -18,7 +18,7 @@ describe('AccessControl', () => {
   });
 
   describe('deny', () => {
-    it('always denies.', async () => {
+    it('always denies with default error and message if no arguments are given.', async () => {
       const ac = new AccessControl();
 
       const resultDenied = await ac.deny().inspect();
@@ -29,18 +29,41 @@ describe('AccessControl', () => {
           error: expect.any(NotAllowedError),
         }),
       );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'Not allowed',
+        }),
+      );
     });
 
-    it('returns a preformatted error if defined.', async () => {
+    it('always denies with default error and custom message a string is given.', async () => {
+      const ac = new AccessControl();
+
+      const resultDenied = await ac.deny('None Shall Pass!').inspect();
+
+      expect(resultDenied).toEqual(
+        expect.objectContaining({
+          allowed: false,
+          error: expect.any(NotAllowedError),
+        }),
+      );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'None Shall Pass!',
+        }),
+      );
+    });
+
+    it('always denies with custom error if an Error instance is given.', async () => {
       class CustomError extends Error {}
 
-      const ac = new AccessControl({
-        preformatError: (): CustomError => {
-          return new CustomError(`Custom error`);
-        },
-      });
+      const ac = new AccessControl();
 
-      const resultDenied = await ac.deny().inspect();
+      const resultDenied = await ac
+        .deny(new CustomError('None Shall Pass!'))
+        .inspect();
 
       expect(resultDenied).toEqual(
         expect.objectContaining({
@@ -51,7 +74,60 @@ describe('AccessControl', () => {
 
       expect(resultDenied.error).toEqual(
         expect.objectContaining({
-          message: 'Custom error',
+          message: 'None Shall Pass!',
+        }),
+      );
+    });
+
+    it('returns a preformatted error with custom string if defined.', async () => {
+      class CustomError extends Error {}
+
+      const ac = new AccessControl({
+        preformatError: (message): CustomError => {
+          return new CustomError(message);
+        },
+      });
+
+      const resultDenied = await ac.deny('Halt!').inspect();
+
+      expect(resultDenied).toEqual(
+        expect.objectContaining({
+          allowed: false,
+          error: expect.any(CustomError),
+        }),
+      );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'Halt!',
+        }),
+      );
+    });
+
+    it('skips the preformatted error if error is given.', async () => {
+      class CustomError extends Error {}
+      class EvenMoreCustomError extends Error {}
+
+      const ac = new AccessControl({
+        preformatError: (message): CustomError => {
+          return new CustomError(message);
+        },
+      });
+
+      const resultDenied = await ac
+        .deny(new EvenMoreCustomError('Access denied!'))
+        .inspect();
+
+      expect(resultDenied).toEqual(
+        expect.objectContaining({
+          allowed: false,
+          error: expect.any(EvenMoreCustomError),
+        }),
+      );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'Access denied!',
         }),
       );
     });
@@ -104,6 +180,59 @@ describe('AccessControl', () => {
       expect(resultDenied.error).toEqual(
         expect.objectContaining({
           message: 'Custom error: sorry',
+        }),
+      );
+    });
+
+    it('skips the preformatted error if error is returned.', async () => {
+      class CustomError extends Error {}
+      class EvenMoreCustomError extends Error {}
+
+      const ac = new AccessControl({
+        preformatError: (message): CustomError => {
+          return new CustomError(message);
+        },
+      });
+
+      const resultDenied = await ac
+        .can(() => new EvenMoreCustomError('Access denied!'))
+        .inspect();
+
+      expect(resultDenied).toEqual(
+        expect.objectContaining({
+          allowed: false,
+          error: expect.any(EvenMoreCustomError),
+        }),
+      );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'Access denied!',
+        }),
+      );
+    });
+
+    it('returns a preformatted error if string is returned.', async () => {
+      class CustomError extends Error {}
+
+      const ac = new AccessControl({
+        preformatError: (message): CustomError => {
+          return new CustomError(message);
+        },
+      });
+
+      const resultDenied = await ac.can(() => 'Halt!').inspect();
+
+      expect(resultDenied).toEqual(
+        expect.objectContaining({
+          allowed: false,
+          error: expect.any(CustomError),
+        }),
+      );
+
+      expect(resultDenied.error).toEqual(
+        expect.objectContaining({
+          message: 'Halt!',
         }),
       );
     });
