@@ -16,21 +16,16 @@ export type Factor<T extends PolicyFn> = Policy<T> | PolicyFnReturn | T;
 
 export type AccessControlSettings = {
   preformatError?: (message?: string) => Error;
-  formatError?: (err: Error) => Error;
 };
 
 export class AccessControl {
-  private readonly fnSettings: PolicyCanSettings;
+  private readonly policyCanSettings: PolicyCanSettings;
   private readonly allowedPolicy: Policy<PolicyFn>;
   private readonly deniedPolicy: Policy<PolicyFn>;
 
-  public constructor({
-    preformatError,
-    formatError,
-  }: AccessControlSettings = {}) {
-    this.fnSettings = {
+  public constructor({ preformatError }: AccessControlSettings = {}) {
+    this.policyCanSettings = {
       preformatError: preformatError,
-      formatError: formatError,
     };
 
     // Cached policy object for AbstractControl.deny
@@ -60,7 +55,7 @@ export class AccessControl {
    * Allows or denies according to the policy function return.
    */
   public can<T extends PolicyFn>(policyFn: T): Policy<T> {
-    return new PolicyCan(policyFn, this.fnSettings);
+    return new PolicyCan(policyFn, this.policyCanSettings);
   }
 
   /**

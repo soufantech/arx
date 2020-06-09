@@ -181,25 +181,6 @@ describe('PolicyCan', () => {
       expect(settings.preformatError).toHaveBeenCalledTimes(0);
       expect(result.error).toBeInstanceOf(NotSelfError);
     });
-
-    it('the error is passed to formatError untouched.', async () => {
-      const settings: PolicyCanSettings = {
-        formatError: jest.fn((error) => {
-          return error;
-        }),
-      };
-
-      const error = new NotSelfError('Not self');
-
-      const notSelf = new PolicyCan(() => {
-        return error;
-      }, settings);
-
-      const result = await notSelf.inspect();
-
-      expect(settings.formatError).toHaveBeenCalledWith(error);
-      expect(result.error).toBeInstanceOf(NotSelfError);
-    });
   });
 
   describe('when policy function returns an instance of PolicyResult', () => {
@@ -305,97 +286,24 @@ describe('PolicyCan', () => {
       expect(result1).toBe(false);
       expect(result2).toBe(false);
     });
-
-    it('formatError receives the PolicyResult error from the policy that was not allowed.', async () => {
-      const settings: PolicyCanSettings = {
-        formatError: jest.fn((error) => {
-          return error;
-        }),
-      };
-
-      const isDivisibleByTenProxied = new PolicyCan(
-        (n: number) => isDivisibleByTen.inspect(n),
-        settings,
-      );
-
-      const result1 = await isDivisibleByTenProxied.inspect(131);
-      const result2 = await isDivisibleByTenProxied.inspect(132);
-
-      expect(result1.error).toBeInstanceOf(NotEvenError);
-      expect(settings.formatError).toHaveBeenNthCalledWith(1, result1.error);
-
-      expect(result2.error).toBeInstanceOf(NotDivisibleByTenError);
-      expect(settings.formatError).toHaveBeenNthCalledWith(2, result2.error);
-    });
   });
 
-  describe('error formatting', () => {
+  it('message is undefined in preformatError if a string is not returned.', async () => {
     class PreformattedError extends Error {}
-    class FormattedError extends Error {}
 
-    it('formatError receives the output of preformatError.', async () => {
-      const settings: PolicyCanSettings = {
-        preformatError(message) {
-          return new PreformattedError(`preformatted(${message})`);
-        },
-        formatError(error) {
-          return new FormattedError(`formatted(${error.message})`);
-        },
-      };
+    const settings: PolicyCanSettings = {
+      preformatError: jest.fn(() => {
+        return new PreformattedError(`Forbidden for no apparent reason`);
+      }),
+    };
 
-      const forbidden = new PolicyCan(() => {
-        return 'Forbidden!';
-      }, settings);
+    const forbidden = new PolicyCan(() => {
+      return false;
+    }, settings);
 
-      const result = await forbidden.inspect();
+    await forbidden.inspect();
 
-      expect(result.error).toBeInstanceOf(FormattedError);
-      expect(result.error).toEqual(
-        expect.objectContaining({
-          message: 'formatted(preformatted(Forbidden!))',
-        }),
-      );
-    });
-
-    it('formatError receives the default error if preformattedError has not been defined.', async () => {
-      const settings: PolicyCanSettings = {
-        formatError: jest.fn((error) => {
-          return new FormattedError(`formatted(${error.toString()})`);
-        }),
-      };
-
-      const forbidden = new PolicyCan(() => {
-        return 'Forbidden!';
-      }, settings);
-
-      const result = await forbidden.inspect();
-
-      expect(settings.formatError).toHaveBeenCalledWith(
-        expect.any(NotAllowedError),
-      );
-      expect(result.error).toBeInstanceOf(FormattedError);
-      expect(result.error).toEqual(
-        expect.objectContaining({
-          message: 'formatted(NotAllowedError: Forbidden!)',
-        }),
-      );
-    });
-
-    it('message is undefined in preformatError if a string is not returned.', async () => {
-      const settings: PolicyCanSettings = {
-        preformatError: jest.fn(() => {
-          return new PreformattedError(`Forbidden for no apparent reason`);
-        }),
-      };
-
-      const forbidden = new PolicyCan(() => {
-        return false;
-      }, settings);
-
-      await forbidden.inspect();
-
-      expect(settings.preformatError).toHaveBeenLastCalledWith(undefined);
-    });
+    expect(settings.preformatError).toHaveBeenLastCalledWith(undefined);
   });
 
   it('throws an error when a function is not given.', async () => {

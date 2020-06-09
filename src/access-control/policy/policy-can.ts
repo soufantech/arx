@@ -8,7 +8,6 @@ import { NotAllowedError } from '../errors';
 
 export interface PolicyCanSettings {
   preformatError?: (message?: string) => Error;
-  formatError?: (err: Error) => Error;
 }
 
 function isPolicyResult(result: unknown): result is PolicyResult {
@@ -23,7 +22,7 @@ function isPolicyResult(result: unknown): result is PolicyResult {
 export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
   constructor(
     private readonly fn: T,
-    { preformatError, formatError }: PolicyCanSettings = {},
+    { preformatError }: PolicyCanSettings = {},
   ) {
     super();
 
@@ -31,17 +30,9 @@ export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
       throw new Error('PolicyCan demands a function as argument');
     }
 
-    if (typeof formatError === 'function') {
-      this.formatError = formatError;
-    }
-
     if (typeof preformatError === 'function') {
       this.preformatError = preformatError;
     }
-  }
-
-  private formatError(err: Error): Error {
-    return err;
   }
 
   private preformatError(message?: string): Error {
@@ -71,12 +62,7 @@ export class PolicyCan<T extends PolicyFn> extends AbstractPolicy<T> {
   ): Promise<PolicyResult> {
     const result = await this.fn(...args);
 
-    const normalizedResult = this.normalize(result);
-
-    const error =
-      normalizedResult instanceof Error
-        ? this.formatError(normalizedResult)
-        : normalizedResult;
+    const error = this.normalize(result);
 
     return {
       error,

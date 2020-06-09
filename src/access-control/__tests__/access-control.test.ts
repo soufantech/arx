@@ -55,31 +55,6 @@ describe('AccessControl', () => {
         }),
       );
     });
-
-    it('returns a custom formatted error if defined.', async () => {
-      class CustomError extends Error {}
-
-      const ac = new AccessControl({
-        formatError: (error): CustomError => {
-          return new CustomError(`Custom error: ${error.message}`);
-        },
-      });
-
-      const resultDenied = await ac.deny().inspect();
-
-      expect(resultDenied).toEqual(
-        expect.objectContaining({
-          allowed: false,
-          error: expect.any(CustomError),
-        }),
-      );
-
-      expect(resultDenied.error).toEqual(
-        expect.objectContaining({
-          message: 'Custom error: Not allowed',
-        }),
-      );
-    });
   });
 
   describe('can', () => {
@@ -118,31 +93,6 @@ describe('AccessControl', () => {
       });
 
       const resultDenied = await ac.can(() => 'sorry').inspect();
-
-      expect(resultDenied).toEqual(
-        expect.objectContaining({
-          allowed: false,
-          error: expect.any(CustomError),
-        }),
-      );
-
-      expect(resultDenied.error).toEqual(
-        expect.objectContaining({
-          message: 'Custom error: sorry',
-        }),
-      );
-    });
-
-    it('returns a custom formatted error if defined.', async () => {
-      class CustomError extends Error {}
-
-      const ac = new AccessControl({
-        formatError: (error): CustomError => {
-          return new CustomError(`Custom error: ${error.message}`);
-        },
-      });
-
-      const resultDenied = await ac.can(() => new Error('sorry')).inspect();
 
       expect(resultDenied).toEqual(
         expect.objectContaining({
@@ -452,12 +402,6 @@ describe('AccessControl', () => {
   });
 
   it('can be integrated with other AccessControl instances', async () => {
-    class WrapperError extends Error {
-      constructor(public readonly originalError: Error) {
-        super(originalError.message);
-      }
-    }
-
     class CustomError extends Error {}
 
     const ac1 = new AccessControl();
@@ -468,17 +412,16 @@ describe('AccessControl', () => {
       },
     });
 
-    const ac3 = new AccessControl({
-      formatError: (error): WrapperError => {
-        return new WrapperError(error);
-      },
-    });
+    const ac3 = new AccessControl();
 
     const resultAllowed = await ac3
       .any(
         ac1.deny(),
         ac3.all(true, ac1.allow()),
-        ac2.can(() => 'Denied!'),
+        ac1.any(
+          ac2.can(() => 'Denied!'),
+          ac3.allow(), // <-- allows the whole composition
+        ),
       )
       .inspect();
 
@@ -490,20 +433,18 @@ describe('AccessControl', () => {
     );
 
     const resultDenied = await ac3
-      .can(async () => ac1.all(ac2.can(() => 'Denied!')).inspect())
+      .all(
+        ac1.allow(),
+        ac3.any(false, ac1.allow()),
+        ac1.any(
+          ac3.deny(),
+          ac2.can(() => 'Denied!'), // <-- denies the whole composition
+        ),
+      )
       .inspect();
 
-    expect(resultDenied.error).toBeInstanceOf(WrapperError);
+    expect(resultDenied.error).toBeInstanceOf(CustomError);
     expect(resultDenied.error).toEqual(
-      expect.objectContaining({
-        message: 'Denied!',
-      }),
-    );
-
-    expect((resultDenied.error as WrapperError).originalError).toBeInstanceOf(
-      CustomError,
-    );
-    expect((resultDenied.error as WrapperError).originalError).toEqual(
       expect.objectContaining({
         message: 'Denied!',
       }),
