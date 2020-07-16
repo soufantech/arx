@@ -1,15 +1,14 @@
 {
   "name": "@soufantech/arx",
   "version": "1.0.0-rc.1",
-  "description": "Access control utilities for Node.js apps",
-  "keywords": [],
+  "description": "Arx is an access control framework for Node.js, strongly focused on composability and flexibility",
+  "keywords": ["authorization", "permission", "RBAC", "access"],
   "author": {
     "name": "Fábio Priamo",
     "email": "fabio@soufan.com.br",
     "url": "https://github.com/fhpriamo"
   },
   "license": "UNLICENSED",
-  "private": true,
   "publishConfig": {
     "access:": "restricted"
   },
@@ -17,12 +16,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "lint": "eslint ./src/**/*.{ts,tsx}",
-    "lint-hard": "tsc --noEmit && yarn run lint",
+    "lint": "tsc --noEmit && eslint ./src/**/*.{ts,tsx}",
     "clear": "rm -rf dist",
     "build": "tsc",
-    "rebuild": "rm -rf dist && tsc",
-    "pre-publish": "yarn run rebuild && yarn run test --silent"
+    "rebuild": "npm run clear && npm run build",
+    "prepublishOnly": "npm run rebuild && npm run test --silent"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
