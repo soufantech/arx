@@ -19,15 +19,17 @@
 
 ## Installing
 
-Latest version:
+with yarn
 
-```
-yarn add @soufantech/arx
-```
+`yarn add @soufantech/arx`
+
+or npm
+
+`npm install @soufantech/arx`
 
 ## Running the tests
 
-Just execute:
+Just execute
 
 ```
 yarn test
@@ -35,7 +37,10 @@ yarn test
 
 ## Todo:
 
-- [ ] Add and configure semantic-release.
+- docs: add usage examples;
+- chore: add and configure semantic-release;
+- tests: remove dependency on '@soufantech/hie';
+  - chore: remove '@soufantech/hie' from dev dependencies;
 
 ---
 

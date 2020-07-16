@@ -1,17 +1,11 @@
-import { RoleMatcher, HierarchicalRoleAuthority } from '../../role-matcher';
+import hie from '@soufantech/hie';
 import { AccessControl } from '../../access-control';
 import { NotAuthorizedError } from './errors';
 import roleHierarchy from './role-hierarchy.json';
 
 export { PolicyFn, Policy } from '../../access-control';
 
-const roleMatcher = new RoleMatcher(
-  new HierarchicalRoleAuthority(roleHierarchy),
-);
-
-export const matchRoles: RoleMatcher['match'] = roleMatcher.match.bind(
-  roleMatcher,
-);
+export const matchRoles = hie(roleHierarchy);
 
 export const accessControl = new AccessControl({
   preformatError(message): NotAuthorizedError {

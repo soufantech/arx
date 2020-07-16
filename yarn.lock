@@ -614,6 +614,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@soufantech/hie@^1.0.0-beta.1":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@soufantech/hie/-/hie-1.0.0-beta.1.tgz#5a91a982c0cfca4736b8f2c351139758cdda7abf"
+  integrity sha512-FwSqW/sY0orAxZxenOl3Qg0lM7Wb0hdS4F4HYJ6oUSXk39fcJVUatAnxSPeHSraECAldiP5oOZyaASdGh4eV+w==
+
 "@types/babel__core@^7.0.0":
   version "7.1.9"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.9.tgz#77e59d438522a6fb898fa43dc3455c6e72f3963d"
