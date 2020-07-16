@@ -6,7 +6,7 @@
 
 <div align="center">
   <h1>@soufantech/arx</h1>
-  <p>Access control utilities for Node.js apps.</p>
+  <p>Arx is an access control framework for Node.js, strongly focused on composability and flexibility.</p>
 </div>
 
 <br />
@@ -19,15 +19,17 @@
 
 ## Installing
 
-Latest version:
+with yarn
 
-```
-yarn add @soufantech/arx
-```
+`yarn add @soufantech/arx`
+
+or npm
+
+`npm install @soufantech/arx`
 
 ## Running the tests
 
-Just execute:
+Just execute
 
 ```
 yarn test
@@ -35,7 +37,10 @@ yarn test
 
 ## Todo:
 
-- [ ] Add and configure semantic-release.
+- docs: add usage examples;
+- chore: add and configure semantic-release;
+- tests: remove dependency on '@soufantech/hie';
+  - chore: remove '@soufantech/hie' from dev dependencies;
 
 ---
 
@@ -46,10 +51,8 @@ yarn test
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]: "typescript"
 
-[npm-image]: https://img.shields.io/npm/v/@soufantech/server-errors.svg?style=for-the-badge&logo=npm
-[npm-url]: https://npmjs.org/package/@soufantech/server-errors "npm"
+[npm-image]: https://img.shields.io/npm/v/@soufantech/arx.svg?style=for-the-badge&logo=npm
+[npm-url]: https://npmjs.org/package/@soufantech/arx "npm"
 
 [jest-image]: https://img.shields.io/badge/tested_with-jest-99424f.svg?style=for-the-badge&logo=jest
 [jest-url]: https://github.com/facebook/jest "jest"
-
-
