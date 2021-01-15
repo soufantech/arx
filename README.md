@@ -6,7 +6,7 @@
 
 <div align="center">
   <h1>@soufantech/arx</h1>
-  <p>Arx is an access control framework for Node.js, strongly focused on composability and flexibility.</p>
+  <p>Arx is an access control library for Node.js apps, strongly focused on efficiency, type safety and overall composability.</p>
 </div>
 
 <br />
