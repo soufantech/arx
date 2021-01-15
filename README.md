@@ -21,26 +21,29 @@
 
 with yarn
 
-`yarn add @soufantech/arx`
+```console
+yarn add @soufantech/arx
+```
 
 or npm
 
-`npm install @soufantech/arx`
+```console
+npm install @soufantech/arx
+```
+
+## Docs
+
+Documentation is comming soon (bare with us!). Meanwhile, you can take a look [here](src/__tests__/app) to have a grasp of how arx may be used in a real context.
+
+Also, arx works really well with [hie](https://github.com/soufantech/hie), its little brother. Check it out!
 
 ## Running the tests
 
-Just execute
+Just run
 
-```
+```console
 yarn test
 ```
-
-## Todo:
-
-- docs: add usage examples;
-- chore: add and configure semantic-release;
-- tests: remove dependency on '@soufantech/hie';
-  - chore: remove '@soufantech/hie' from dev dependencies;
 
 ---
 
