@@ -1,6 +1,6 @@
 {
   "name": "@soufantech/arx",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Arx is an access control library for Node.js apps, strongly focused on efficiency, type safety and overall composability.",
   "keywords": [
     "authorization",
