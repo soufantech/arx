@@ -13,6 +13,14 @@
     "email": "fabio@soufan.com.br",
     "url": "https://github.com/fhpriamo"
   },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/soufantech/arx.git"
+  },
+  "homepage": "https://github.com/soufantech/arx#readme",
+  "bugs": {
+    "url" : "https://github.com/soufantech/arx/issues"
+  },
   "license": "MIT",
   "publishConfig": {
     "access:": "restricted"
