@@ -1,21 +1,29 @@
 {
   "name": "@soufantech/arx",
-  "version": "1.0.0-beta.1",
-  "description": "Arx is an access control framework for Node.js, strongly focused on composability and flexibility",
+  "version": "1.0.0",
+  "description": "Arx is an access control library for Node.js apps, strongly focused on efficiency, type safety and overall composability.",
   "keywords": [
     "authorization",
     "permission",
     "RBAC",
-    "access"
+    "access-control"
   ],
   "author": {
     "name": "Fábio Priamo",
     "email": "fabio@soufan.com.br",
     "url": "https://github.com/fhpriamo"
   },
-  "license": "UNLICENSED",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/soufantech/arx.git"
+  },
+  "homepage": "https://github.com/soufantech/arx#readme",
+  "bugs": {
+    "url" : "https://github.com/soufantech/arx/issues"
+  },
+  "license": "MIT",
   "publishConfig": {
-    "access:": "restricted"
+    "access:": "public"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
